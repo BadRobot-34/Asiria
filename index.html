@@ -1,49 +1,304 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>MOVISTAR 1 HD</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<style id="asiria-global-ad-styles">
+    .asiria-global-ad {
+        grid-column: 1 / -1;
+        width: min(100% - 24px, 1200px);
+        min-height: 1px;
+        margin: 16px auto;
+        clear: both;
     }
-    html, body {
-      width: 100%;
-      height: 100%;
-      background-color: #000000;
-      overflow: hidden;
+
+    .asiria-global-ad[data-widget-id="2027164"] {
+        min-height: 300px;
     }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+</style>
+
+<script>
+(function () {
+    'use strict';
+
+    if (window.__asiriaGlobalAdsInjected) return;
+    window.__asiriaGlobalAdsInjected = true;
+
+    // ============================================================
+    // DETECTEAZĂ DOMENIUL - JavaScript
+    // ============================================================
+    var isAsiria = window.location.hostname.indexOf('asiria.is') !== -1;
+
+    var injectorScript = document.currentScript;
+    var mgidScriptUrl = 'https://jsc.adskeeper.com/site/1098361.js';
+    var adcashScriptUrl = '//acscdn.com/script/aclib.js';
+
+    // ============================================================
+    // PROTECȚIE FULL SCREEN - BLOCARE LA NIVEL DE EVENIMENT
+    // ============================================================
+    var fullScreenBlocked = false;
+    var fullScreenTimer = null;
+
+    function isFullScreenButton(target) {
+        var selectors = [
+            '.vjs-fullscreen-control',
+            '.vjs-fullscreen-control button',
+            '.vjs-fs',
+            '.vjs-fullscreen',
+            '[aria-label*="full" i]',
+            '[aria-label*="Full" i]',
+            '[aria-label*="Fullscreen" i]',
+            '[title*="Fullscreen" i]',
+            '[title*="fullscreen" i]',
+            '[data-role*="fullscreen" i]',
+            '.fullscreen-btn',
+            '.fullscreen-button',
+            '.player-fullscreen',
+            '#fullscreen-btn',
+            'iframe .vjs-fullscreen-control',
+            'iframe .fullscreen-btn'
+        ];
+
+        var el = target;
+        while (el && el !== document) {
+            for (var i = 0; i < selectors.length; i++) {
+                if (el.matches && el.matches(selectors[i])) {
+                    return true;
+                }
+            }
+            el = el.parentNode;
+        }
+        return false;
     }
-  </style>
-</head>
-<body>
 
-  <!-- Reproductor dentro del iframe -->
-  <iframe 
-    src="https://cuttingfame.net/e/k55htp1f198yp" 
-    allowfullscreen="true" 
-    allow="autoplay; encrypted-media">
-  </iframe>
+    // ============================================================
+    // BLOCARE CLICK PE FULL SCREEN
+    // ============================================================
+    document.addEventListener('click', function(e) {
+        if (isFullScreenButton(e.target)) {
+            fullScreenBlocked = true;
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            clearTimeout(fullScreenTimer);
+            fullScreenTimer = setTimeout(function() {
+                fullScreenBlocked = false;
+            }, 100);
+        }
+    }, true);
 
-  <!-- Histats Tracker -->
-  <script type="text/javascript">
-    var _Hasync = _Hasync || [];
-    _Hasync.push(['Histats.start', '1,4614620,4,0,0,0,00010000']);
-    _Hasync.push(['Histats.fasi', '1']);
-    _Hasync.push(['Histats.track_hits', '']);
-    (function() {
-      var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-      hs.src = ('//s10.histats.com/js15_as.js');
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-    })();
-  </script>
+    document.addEventListener('mousedown', function(e) {
+        if (isFullScreenButton(e.target)) {
+            fullScreenBlocked = true;
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            clearTimeout(fullScreenTimer);
+            fullScreenTimer = setTimeout(function() {
+                fullScreenBlocked = false;
+            }, 100);
+        }
+    }, true);
 
-</body>
-</html>
+    // ============================================================
+    // SUPRASCRIE FUNCȚIILE DE RECLAME
+    // ============================================================
+    if (typeof window._mgq !== 'undefined' && window._mgq.push) {
+        var originalMgqPush = window._mgq.push;
+        window._mgq.push = function(item) {
+            if (fullScreenBlocked) {
+                return;
+            }
+            return originalMgqPush.call(this, item);
+        };
+    }
+
+    if (typeof window.aclib !== 'undefined' && window.aclib.runPop) {
+        var originalRunPop = window.aclib.runPop;
+        window.aclib.runPop = function(config) {
+            if (fullScreenBlocked) {
+                return;
+            }
+            return originalRunPop.call(this, config);
+        };
+    }
+
+    // ============================================================
+    // FUNCȚII RECLAME
+    // ============================================================
+    function findWidget(id) {
+        return document.querySelector('[data-widget-id="' + id + '"]');
+    }
+
+    function makeWidget(id) {
+        var widget = document.createElement('div');
+        widget.className = 'asiria-global-ad';
+        widget.setAttribute('data-type', '_mgwidget');
+        widget.setAttribute('data-widget-id', id);
+        return widget;
+    }
+
+    function insertAfter(reference, element) {
+        if (!reference || !reference.parentNode) return false;
+        reference.parentNode.insertBefore(element, reference.nextSibling);
+        return true;
+    }
+
+    function insertWidgets() {
+        var body = document.body;
+        if (!body) return;
+        // Toate widget-urile MGID au fost eliminate
+    }
+
+    function pageAlreadyLoadsAds() {
+        var scripts = document.scripts;
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i] === injectorScript) continue;
+            var source = scripts[i].src || '';
+            var code = scripts[i].textContent || '';
+            if (source.indexOf('jsc.adskeeper.com/site/1098361.js') !== -1 ||
+                code.indexOf('jsc.adskeeper.com/site/1098361.js') !== -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function addScript(id, src, onload) {
+        var existing = document.getElementById(id);
+        if (existing) {
+            if (onload) onload();
+            return;
+        }
+
+        var script = document.createElement('script');
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        if (onload) script.onload = onload;
+        document.body.appendChild(script);
+    }
+
+    function startAds() {
+        if (window.__asiriaAdScriptsStarted || pageAlreadyLoadsAds()) return;
+        window.__asiriaAdScriptsStarted = true;
+
+        // ============================================================
+        // RECLAMA 1 - PopAds (rulează pe AMBELE domenii)
+        // ============================================================
+        var popadsScript = document.createElement('script');
+        popadsScript.type = 'text/javascript';
+        popadsScript.setAttribute('data-cfasync', 'false');
+        popadsScript.text = '/*<![CDATA[/* */\n' +
+            '(function(){var m=window,h="d02b26deeb1e9b201ba570549a233d25",c=[["siteId",413-389-190+5312513],["minBid",0],["popundersPerIP","0:1"],["delayBetween",5],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],g=["d3d3LmRpc3BsYXl2ZXJ0aXNpbmcuY29tL1NOL3dDSC9ndGltZWtpdC1zZGsubWluLmpz","ZDNtem9rdHk5NTFjNXcuY2xvdWRmcm9udC5uZXQvYXJhdmVuLm1pbi5qcw==","d3d3LmdxdnpmcWdlaWtuZHYuY29tL0JtYy9HaUpwc0IveXRpbWVraXQtc2RrLm1pbi5qcw==","d3d3LnN0bnVjcm9sLmNvbS9mcmF2ZW4ubWluLmpz"],y=-1,d,q,w=function(){clearTimeout(q);y++;if(g[y]&&!(1813580204000<(new Date).getTime()&&1<y)){d=m.document.createElement("script");d.type="text/javascript";d.async=!0;var u=m.document.getElementsByTagName("script")[0];d.src="https://"+atob(g[y]);d.crossOrigin="anonymous";d.onerror=w;d.onload=function(){clearTimeout(q);m[h.slice(0,16)+h.slice(0,16)]||w()};q=setTimeout(w,5E3);u.parentNode.insertBefore(d,u)}};if(!m[h]){try{Object.freeze(m[h]=c)}catch(e){}w()}})();\n' +
+            '/*]]>/* */';
+        document.body.appendChild(popadsScript);
+
+        // ============================================================
+        // RECLAMA 2 - llvpn.com (DOAR pe asiria.is)
+        // ============================================================
+        if (isAsiria) {
+            try {
+                (function(s){
+                    s.dataset.zone = '8863627';
+                    s.src = 'https://llvpn.com/tag.min.js';
+                    var target = [document.documentElement, document.body].filter(Boolean).pop();
+                    if (target) {
+                        target.appendChild(s);
+                    }
+                })(document.createElement('script'));
+            } catch (e) {}
+        }
+
+        // ============================================================
+        // RECLAMA 3 - diligenceshaped.com (DOAR pe asiria.is)
+        // ============================================================
+        if (isAsiria) {
+            var script3 = document.createElement('script');
+            script3.src = 'https://diligenceshaped.com/e8/e3/6a/e8e36ab4a21712e9ffe9f66cd39721bc.js';
+            script3.async = true;
+            document.body.appendChild(script3);
+        }
+
+        // ============================================================
+        // RECLAMA 4 - blurbsoutpry.com (DOAR pe asiria.is)
+        // ============================================================
+        if (isAsiria) {
+            var script4 = document.createElement('script');
+            script4.src = '//nq.blurbsoutpry.com/rXvU3r19YbUK/elWrG';
+            script4.async = true;
+            script4.setAttribute('data-cfasync', 'false');
+            document.body.appendChild(script4);
+        }
+
+        // ============================================================
+        // RECLAMA 5 - Adcash Pop-Under (NOUL COD - rulează pe AMBELE domenii)
+        // ============================================================
+        // Adaugă scriptul aclib.js
+        var adcashScript = document.createElement('script');
+        adcashScript.id = 'aclib';
+        adcashScript.type = 'text/javascript';
+        adcashScript.src = '//acscdn.com/script/aclib.js';
+        document.body.appendChild(adcashScript);
+
+        // Rulează pop-up-ul după ce scriptul se încarcă
+        adcashScript.onload = function() {
+            if (typeof aclib !== 'undefined' && typeof aclib.runPop === 'function') {
+                aclib.runPop({
+                    zoneId: '12107914'
+                });
+            }
+        };
+
+        // Fallback: încearcă să ruleze și după un timeout
+        setTimeout(function() {
+            if (typeof aclib !== 'undefined' && typeof aclib.runPop === 'function') {
+                aclib.runPop({
+                    zoneId: '12107914'
+                });
+            }
+        }, 3000);
+    }
+
+    function scheduleAds() {
+        var run = function () {
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(startAds, {timeout: 2500});
+            } else {
+                window.setTimeout(startAds, 800);
+            }
+        };
+
+        if (document.readyState === 'complete') run();
+        else window.addEventListener('load', run, {once: true});
+    }
+
+    function initialize() {
+        insertWidgets();
+        scheduleAds();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initialize, {once: true});
+    } else {
+        initialize();
+    }
+}());
+</script>
+<title>MOVISTAR 1 HD</title>
+
+<a href='' target='_blank'><img alt='' border='0'  src='https://www.worldometers.info/img/flags/sp-flag.gif' style='left: 10px; position: absolute; top: 8px;' width='30' height='15'/></a>   
+
+
+<body bgcolor="black">
+
+
+<!--player by xstream.to--><iframe src="https://cuttingfame.net/e/k55htp1f198yp" width="100%" height="100%" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+
+<!-- Histats.com  START  (aync)-->
+<script type="text/javascript">var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,4614620,4,0,0,0,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();</script>
+<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4614620&101" alt="" border="0"></a></noscript>
+<!-- Histats.com  END  -->
+
+</body></html>
